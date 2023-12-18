@@ -17,7 +17,6 @@ class MainActivity : ComponentActivity() {
             A2023_11_sopraTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
-
                     //Démarrage de l'application
                     SearchScreen()
                 }

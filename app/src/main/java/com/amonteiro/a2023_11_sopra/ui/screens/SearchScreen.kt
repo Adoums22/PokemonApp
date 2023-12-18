@@ -1,6 +1,8 @@
 package com.amonteiro.a2023_11_sopra.ui.screens
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +26,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,9 +63,16 @@ fun SearchScreenPreview() {
 //Composable représentant l'ensemble de l'écran
 @Composable
 fun SearchScreen() {
+    //Etat
+    var searchText by remember {            mutableStateOf("")        }
+
+    val filterList = pictureList.filter { it.text.contains(searchText) }
+
     Column(modifier = Modifier.padding(8.dp)) {
 
-        SearchBar()
+        SearchBar(text = searchText, onValueChange = {
+            searchText = it
+        })
 
         Spacer(Modifier.size(8.dp))
 
@@ -67,14 +80,14 @@ fun SearchScreen() {
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(pictureList.size) {
-                PictureRowItem(Modifier.background(Color.White), data = pictureList[it])
+            items(filterList.size) {
+                PictureRowItem(Modifier.background(Color.White), data = filterList[it])
             }
         }
 
         Row(modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
             Button(
-                onClick = { /* Do something! */ },
+                onClick = { searchText = ""},
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
                 Icon(
@@ -106,10 +119,11 @@ fun SearchScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(modifier: Modifier = Modifier) {
+fun SearchBar(modifier: Modifier = Modifier, text: String, onValueChange: (String) -> Unit ) {
+
     TextField(
-        value = "", //Valeur par défaut
-        onValueChange = { newValue -> }, //Action
+        value = text, //Valeur par défaut
+        onValueChange = onValueChange, //Action
         leadingIcon = { //Image d'icone
             Icon(
                 imageVector = Icons.Default.Search,
@@ -129,6 +143,11 @@ fun SearchBar(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData) {
+
+    var expended by remember {mutableStateOf(false)    }
+
+    var texte = if(expended) data.longText else (data.longText.take(20) + "...")
+
     Row(modifier = modifier.fillMaxWidth()) {
 
 //Permission Internet nécessaire
@@ -148,7 +167,9 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData) {
                 .widthIn(max = 100.dp)
         )
 
-        Column {
+        Column(modifier = Modifier.clickable {
+            expended = !expended
+        }) {
             Text(
                 text = data.text,
                 fontSize = 20.sp,
@@ -156,10 +177,11 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData) {
                 color = Color.Black
             )
             Text(
-                text = data.longText.take(20) + "...",
+                text = texte,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
-                color = Color.Blue
+                color = Color.Blue,
+                modifier = Modifier.animateContentSize()
             )
         }
     }
