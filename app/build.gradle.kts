@@ -66,7 +66,10 @@ dependencies {
 
     //requete web
     implementation("com.squareup.okhttp3:okhttp:+")
-
+    //serialiseur JSON
     implementation("com.google.code.gson:gson:+")
+
+    //Image URL
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
 }

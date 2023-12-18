@@ -5,17 +5,21 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 fun main() {
-//    val weather = WeatherAPI.loadWeather("Nice")
-//    println("Il fait ${weather.main.temp}° à ${weather.name} avec un vent de ${weather.wind.speed} m/s")
+    val weather = WeatherAPI.loadWeather("Nice")
+    println("Il fait ${weather.main.temp}° à ${weather.name} avec un vent de ${weather.wind.speed} m/s")
 
-    repeat(10) {
-        var user = WeatherAPI.loadRandomUser()
-        println(user)
-        println("Il s'appelle ${user.name} pour le contacter\nPhone : ${user.coord?.phone ?: "-"}\nMail : ${user.coord?.mail ?: "-"}")
-
-        println("Il s'appelle ${user.name} pour le contacter${if(!user.coord?.phone.isNullOrBlank()) ("\nPhone : " +  user.coord?.phone) else ""}\nMail : ${user
-            .coord?.mail ?: "-"}")
-    }
+//    repeat(10) {
+//        var user = WeatherAPI.loadRandomUser()
+//        println(user)
+//        println("Il s'appelle ${user.name} pour le contacter\nPhone : ${user.coord?.phone ?: "-"}\nMail : ${user.coord?.mail ?: "-"}")
+//
+//        println("Il s'appelle ${user.name} pour le contacter${if(!user.coord?.phone.isNullOrBlank()) ("\nPhone : " +  user.coord?.phone) else ""}\nMail : ${user
+//            .coord?.mail ?: "-"}")
+//
+//        WeatherAPI.loadRandomUsers().forEach {
+//            println("Il s'appelle ${user.name} pour le contacter\nPhone : ${user.coord?.phone ?: "-"}\nMail : ${user.coord?.mail ?: "-"}")
+//        }
+//    }
 }
 
 const val URL_API = "https://api.openweathermap.org/data/2.5"
@@ -40,12 +44,16 @@ object WeatherAPI {
         val json :String = sendGet("https://www.amonteiro.fr/api/randomuser")
 
         //Parsing
-        val data: UserBean = gson.fromJson(json, UserBean::class.java)
-        return data
+        return  gson.fromJson(json, UserBean::class.java)
     }
 
+    fun loadRandomUsers(): List<UserBean> {
+        //récupération des données
+        val json :String = sendGet("https://www.amonteiro.fr/api/randomusers")
 
-
+        //Parsing
+        return  gson.fromJson(json, Array<UserBean>::class.java).toList()
+    }
 
     //Méthode qui prend en entrée une url, execute la requête
     //Retourne le code HTML/JSON reçu
