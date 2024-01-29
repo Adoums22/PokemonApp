@@ -38,7 +38,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.amonteiro.a2023_11_sopra.R
+import com.amonteiro.a2023_11_sopra.Routes
 import com.amonteiro.a2023_11_sopra.model.PictureData
 import com.amonteiro.a2023_11_sopra.model.pictureList
 import com.amonteiro.a2023_11_sopra.ui.theme.A2023_11_sopraTheme
@@ -62,7 +64,7 @@ fun SearchScreenPreview() {
 
 //Composable représentant l'ensemble de l'écran
 @Composable
-fun SearchScreen() {
+fun SearchScreen(navController : NavHostController? = null) {
 
     println("Recomposition SearchScreen() ")
 
@@ -84,7 +86,12 @@ fun SearchScreen() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(filterList.size) {
-                PictureRowItem(Modifier.background(Color.White), data = filterList[it])
+                PictureRowItem(Modifier.background(Color.White),
+                    data = filterList[it],
+                    onPictureClick = {
+                        //Navigation vers detail
+                        navController?.navigate(Routes.DetailScreen.addParam(it))
+                    })
             }
         }
 
@@ -145,7 +152,7 @@ fun SearchBar(modifier: Modifier = Modifier, text: String, onValueChange: (Strin
 //Composable affichant 1 PictureData
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData) {
+fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData, onPictureClick : ()->Unit = {}) {
 
     var expended by remember { mutableStateOf(false) }
 
@@ -168,6 +175,10 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData) {
             modifier = Modifier
                 .heightIn(max = 100.dp)
                 .widthIn(max = 100.dp)
+                .clickable {
+                    //Clic sur l'image
+                    onPictureClick()
+                }
         )
 
         Column(modifier = Modifier.clickable {
