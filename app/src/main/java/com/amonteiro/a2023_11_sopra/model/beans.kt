@@ -1,14 +1,7 @@
-package com.amonteiro.a2023_11_sopra.exo
+package com.amonteiro.a2023_11_sopra.model
 
 import java.util.Random
 
-fun main() {
-    val randomName = RandomName()
-    randomName.add("bobby")
-    repeat(20) {
-        println(randomName.nextDiff() + " ")
-    }
-}
 
 const val LONG_TEXT = """Le Lorem Ipsum est simplement
     du faux texte employé dans la composition
@@ -18,7 +11,8 @@ const val LONG_TEXT = """Le Lorem Ipsum est simplement
 data class PictureData(val url: String, val text: String, val longText: String)
 
 //jeu de donnée
-val pictureList = arrayListOf(PictureData("https://picsum.photos/200", "ABCD", LONG_TEXT),
+val pictureList = arrayListOf(
+    PictureData("https://picsum.photos/200", "ABCD", LONG_TEXT),
     PictureData("https://picsum.photos/201", "BCDE", LONG_TEXT),
     PictureData("https://picsum.photos/202", "CDEF", LONG_TEXT),
     PictureData("https://picsum.photos/203", "EFGH", LONG_TEXT)

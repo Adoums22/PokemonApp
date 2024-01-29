@@ -5,17 +5,17 @@ import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-fun main() {
-
-    val foodList = MexicanFoodAPI.loadFoodList()
-    println(foodList)
-
-
-//    val food = MexicanFoodAPI.loadFood("6")
+//fun main() {
 //
-//    println("Recette : ${food.title}\nDifficulté : ${food.difficulty}")
+//    val foodList = MexicanFoodAPI.loadFoodList()
+//    println(foodList)
 //
-}
+//
+////    val food = MexicanFoodAPI.loadFood("6")
+////
+////    println("Recette : ${food.title}\nDifficulté : ${food.difficulty}")
+////
+//}
 
 object MexicanFoodAPI {
 

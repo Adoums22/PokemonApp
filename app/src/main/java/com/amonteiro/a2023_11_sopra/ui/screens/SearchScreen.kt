@@ -39,8 +39,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amonteiro.a2023_11_sopra.R
-import com.amonteiro.a2023_11_sopra.exo.PictureData
-import com.amonteiro.a2023_11_sopra.exo.pictureList
+import com.amonteiro.a2023_11_sopra.model.PictureData
+import com.amonteiro.a2023_11_sopra.model.pictureList
 import com.amonteiro.a2023_11_sopra.ui.theme.A2023_11_sopraTheme
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -63,8 +63,11 @@ fun SearchScreenPreview() {
 //Composable représentant l'ensemble de l'écran
 @Composable
 fun SearchScreen() {
+
+    println("Recomposition SearchScreen() ")
+
     //Etat
-    var searchText by remember {            mutableStateOf("")        }
+    var searchText by remember { mutableStateOf("") }
 
     val filterList = pictureList.filter { it.text.contains(searchText) }
 
@@ -87,7 +90,7 @@ fun SearchScreen() {
 
         Row(modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
             Button(
-                onClick = { searchText = ""},
+                onClick = { searchText = "" },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
                 Icon(
@@ -119,7 +122,7 @@ fun SearchScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(modifier: Modifier = Modifier, text: String, onValueChange: (String) -> Unit ) {
+fun SearchBar(modifier: Modifier = Modifier, text: String, onValueChange: (String) -> Unit) {
 
     TextField(
         value = text, //Valeur par défaut
@@ -144,9 +147,9 @@ fun SearchBar(modifier: Modifier = Modifier, text: String, onValueChange: (Strin
 @Composable
 fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData) {
 
-    var expended by remember {mutableStateOf(false)    }
+    var expended by remember { mutableStateOf(false) }
 
-    var texte = if(expended) data.longText else (data.longText.take(20) + "...")
+    var texte = if (expended) data.longText else (data.longText.take(20) + "...")
 
     Row(modifier = modifier.fillMaxWidth()) {
 

@@ -4,23 +4,23 @@ import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-fun main() {
-    val weather = WeatherAPI.loadWeather("Nice")
-    println("Il fait ${weather.main.temp}° à ${weather.name} avec un vent de ${weather.wind.speed} m/s")
-
-//    repeat(10) {
-//        var user = WeatherAPI.loadRandomUser()
-//        println(user)
-//        println("Il s'appelle ${user.name} pour le contacter\nPhone : ${user.coord?.phone ?: "-"}\nMail : ${user.coord?.mail ?: "-"}")
+//fun main() {
+//    val weather = WeatherAPI.loadWeather("Nice")
+//    println("Il fait ${weather.main.temp}° à ${weather.name} avec un vent de ${weather.wind.speed} m/s")
 //
-//        println("Il s'appelle ${user.name} pour le contacter${if(!user.coord?.phone.isNullOrBlank()) ("\nPhone : " +  user.coord?.phone) else ""}\nMail : ${user
-//            .coord?.mail ?: "-"}")
-//
-//        WeatherAPI.loadRandomUsers().forEach {
-//            println("Il s'appelle ${user.name} pour le contacter\nPhone : ${user.coord?.phone ?: "-"}\nMail : ${user.coord?.mail ?: "-"}")
-//        }
-//    }
-}
+////    repeat(10) {
+////        var user = WeatherAPI.loadRandomUser()
+////        println(user)
+////        println("Il s'appelle ${user.name} pour le contacter\nPhone : ${user.coord?.phone ?: "-"}\nMail : ${user.coord?.mail ?: "-"}")
+////
+////        println("Il s'appelle ${user.name} pour le contacter${if(!user.coord?.phone.isNullOrBlank()) ("\nPhone : " +  user.coord?.phone) else ""}\nMail : ${user
+////            .coord?.mail ?: "-"}")
+////
+////        WeatherAPI.loadRandomUsers().forEach {
+////            println("Il s'appelle ${user.name} pour le contacter\nPhone : ${user.coord?.phone ?: "-"}\nMail : ${user.coord?.mail ?: "-"}")
+////        }
+////    }
+//}
 
 const val URL_API = "https://api.openweathermap.org/data/2.5"
 
@@ -76,7 +76,7 @@ object WeatherAPI {
 /* -------------------------------- */
 // Weather
 /* -------------------------------- */
-data class WeatherBean(var main:TempBean, var name:String, var wind : WindBean)
+data class WeatherBean(var main: TempBean, var name:String, var wind : WindBean)
 data class TempBean(var temp:Double)
 data class WindBean(var speed:Double)
 
