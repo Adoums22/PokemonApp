@@ -23,9 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.amonteiro.a2023_11_sopra.R
-import com.amonteiro.a2023_11_sopra.model.pictureList
+import com.amonteiro.a2023_11_sopra.model.MainViewModel
 import com.amonteiro.a2023_11_sopra.ui.theme.A2023_11_sopraTheme
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -46,9 +47,12 @@ fun DetailScreenPreview(){
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun DetailScreen(position:Int, navController : NavHostController? = null){
+fun DetailScreen(position:Int, navController : NavHostController? = null, viewModel : MainViewModel = viewModel()){
 
-    val pictureData = pictureList[position]
+    //V1 avec la position mais on n'est pas sur la bonne liste
+    //val pictureData = viewModel.myList[position]
+    //V2 on met dans le view model l'élément choisi
+    val pictureData = viewModel.selectedPictureData ?: viewModel.myList.first()
 
     Column(horizontalAlignment = Alignment.CenterHorizontally,
 

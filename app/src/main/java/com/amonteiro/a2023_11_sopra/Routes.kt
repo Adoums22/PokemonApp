@@ -7,8 +7,9 @@ sealed class Routes(val route: String) {
 
     //Route 2 avec paramètre
     object DetailScreen : Routes("detailScreen/{data}") {
-        //Méthode(s) qui vienne(nt) remplit le ou les paramètre
+        //Méthode(s) qui vienne(nt) remplit le ou les paramètres
         fun addParam(position: Int) = "detailScreen/$position"
+
 
         //fun first() = "detailScreen/0"
     }

@@ -26,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,11 +39,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.amonteiro.a2023_11_sopra.R
 import com.amonteiro.a2023_11_sopra.Routes
+import com.amonteiro.a2023_11_sopra.model.MainViewModel
 import com.amonteiro.a2023_11_sopra.model.PictureData
-import com.amonteiro.a2023_11_sopra.model.pictureList
 import com.amonteiro.a2023_11_sopra.ui.theme.A2023_11_sopraTheme
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -64,19 +66,21 @@ fun SearchScreenPreview() {
 
 //Composable représentant l'ensemble de l'écran
 @Composable
-fun SearchScreen(navController : NavHostController? = null) {
+fun SearchScreen(navController : NavHostController? = null, viewModel: MainViewModel = viewModel()) {
 
-    println("Recomposition SearchScreen() ")
+    //Pour déclancher un élément uniquement en arrivant sur l'écran
+    LaunchedEffect("") {
+        viewModel.loadData()
+    }
+
 
     //Etat
-    var searchText by remember { mutableStateOf("") }
-
-    val filterList = pictureList.filter { it.text.contains(searchText) }
+    val filterList = viewModel.myList.filter { it.text.contains(viewModel.searchText.value) }
 
     Column(modifier = Modifier.padding(8.dp)) {
 
-        SearchBar(text = searchText, onValueChange = {
-            searchText = it
+        SearchBar(text = viewModel.searchText.value, onValueChange = {
+            viewModel.uploadSearchText(it)
         })
 
         Spacer(Modifier.size(8.dp))
@@ -89,6 +93,7 @@ fun SearchScreen(navController : NavHostController? = null) {
                 PictureRowItem(Modifier.background(Color.White),
                     data = filterList[it],
                     onPictureClick = {
+                        viewModel.selectedPictureData = filterList[it]
                         //Navigation vers detail
                         navController?.navigate(Routes.DetailScreen.addParam(it))
                     })
@@ -97,7 +102,7 @@ fun SearchScreen(navController : NavHostController? = null) {
 
         Row(modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
             Button(
-                onClick = { searchText = "" },
+                onClick = { viewModel.uploadSearchText("") },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
                 Icon(
@@ -110,7 +115,9 @@ fun SearchScreen(navController : NavHostController? = null) {
             }
 
             Button(
-                onClick = { /* Do something! */ },
+                onClick = {
+                    viewModel.loadData(true)
+                          },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
                 Icon(
@@ -184,6 +191,7 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData, onPictureCl
         Column(modifier = Modifier.clickable {
             expended = !expended
         }) {
+
             Text(
                 text = data.text,
                 fontSize = 20.sp,
