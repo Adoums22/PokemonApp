@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.amonteiro.a2023_11_sopra.model.MainViewModel
 import com.amonteiro.a2023_11_sopra.ui.screens.DetailScreen
+import com.amonteiro.a2023_11_sopra.ui.screens.MexicanFoodScreen
 import com.amonteiro.a2023_11_sopra.ui.screens.SearchScreen
 import com.amonteiro.a2023_11_sopra.ui.theme.A2023_11_sopraTheme
 
@@ -62,6 +63,11 @@ fun AppNavigation() {
         ) {
             val position = it.arguments?.getInt("data") ?: 0
             DetailScreen(position, navController, mainViewModel)
+        }
+
+        composable(Routes.MexicanFoodScreen.route) {
+            //on peut passer le navController à un écran s'il déclenche des navigations
+            MexicanFoodScreen(navController, mainViewModel)
         }
 
     }

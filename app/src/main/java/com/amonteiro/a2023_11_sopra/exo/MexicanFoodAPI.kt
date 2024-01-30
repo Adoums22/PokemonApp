@@ -5,17 +5,17 @@ import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-//fun main() {
+fun main() {
+
+    val foodList = MexicanFoodAPI.loadFoodList()
+    println(foodList)
+
+
+//    val food = MexicanFoodAPI.loadFood("6")
 //
-//    val foodList = MexicanFoodAPI.loadFoodList()
-//    println(foodList)
+//    println("Recette : ${food.title}\nDifficulté : ${food.difficulty}")
 //
-//
-////    val food = MexicanFoodAPI.loadFood("6")
-////
-////    println("Recette : ${food.title}\nDifficulté : ${food.difficulty}")
-////
-//}
+}
 
 object MexicanFoodAPI {
 
@@ -52,8 +52,10 @@ object MexicanFoodAPI {
         val request = Request.Builder()
             .url(finalurl)
             .get()
-            .addHeader("X-RapidAPI-Key", "93329c7cf9msha136bd696cd1040p10a1dejsnbc52cdb0746e")
+            .addHeader("X-RapidAPI-Key", "3565dfef6cmshe140c295e08b7c6p11dee7jsn04b5325368d4")
             .addHeader("X-RapidAPI-Host", "the-mexican-food-db.p.rapidapi.com")
+//            .addHeader("X-RapidAPI-Key", "93329c7cf9msha136bd696cd1040p10a1dejsnbc52cdb0746e")
+//            .addHeader("X-RapidAPI-Host", "the-mexican-food-db.p.rapidapi.com")
             .build()
         //Execution de la requête
         return client.newCall(request).execute().use { //it:Response

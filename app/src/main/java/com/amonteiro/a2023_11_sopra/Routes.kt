@@ -5,6 +5,7 @@ sealed class Routes(val route: String) {
     //Route 1
     object SearchScreen : Routes("homeScreen")
 
+
     //Route 2 avec paramètre
     object DetailScreen : Routes("detailScreen/{data}") {
         //Méthode(s) qui vienne(nt) remplit le ou les paramètres
@@ -13,4 +14,7 @@ sealed class Routes(val route: String) {
 
         //fun first() = "detailScreen/0"
     }
+
+    //Route mexicanfood
+    object MexicanFoodScreen : Routes("MexicanFoodScreen")
 }

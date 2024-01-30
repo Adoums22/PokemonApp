@@ -1,5 +1,6 @@
 package com.amonteiro.a2023_11_sopra.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,7 +27,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,10 +51,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 
 //Code affiché dans la Preview
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
+@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SearchScreenPreview() {
     A2023_11_sopraTheme {
@@ -66,16 +64,17 @@ fun SearchScreenPreview() {
 
 //Composable représentant l'ensemble de l'écran
 @Composable
-fun SearchScreen(navController : NavHostController? = null, viewModel: MainViewModel = viewModel()) {
+fun SearchScreen(navController: NavHostController? = null, viewModel: MainViewModel = viewModel()) {
 
     //Pour déclancher un élément uniquement en arrivant sur l'écran
-    LaunchedEffect("") {
-        viewModel.loadData()
-    }
+//    LaunchedEffect("") {
+//        viewModel.loadData()
+//    }
 
 
-    //Etat
-    val filterList = viewModel.myList.filter { it.text.contains(viewModel.searchText.value) }
+    //Quand c'était une liste de filtre
+    //val filterList = viewModel.myList.filter { it.text.contains(viewModel.searchText.value) }
+
 
     Column(modifier = Modifier.padding(8.dp)) {
 
@@ -83,17 +82,40 @@ fun SearchScreen(navController : NavHostController? = null, viewModel: MainViewM
             viewModel.uploadSearchText(it)
         })
 
+        Text("Go to MexicanFood",
+            modifier = Modifier.clickable {
+                navController?.navigate(Routes.MexicanFoodScreen.route)
+            }
+        )
+
         Spacer(Modifier.size(8.dp))
+
+//        if(viewModel.runInProgress) {
+//            CircularProgressIndicator()
+//        }
+
+        if (viewModel.errorMessage.value.isNotBlank()) {
+            Text(
+                text = viewModel.errorMessage.value,
+                color = MaterialTheme.colorScheme.onError,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.error)
+                    .padding(
+                        8.dp
+                    )
+            )
+        }
 
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(filterList.size) {
+            items(viewModel.myList.size) {
                 PictureRowItem(Modifier.background(Color.White),
-                    data = filterList[it],
+                    data = viewModel.myList[it],
                     onPictureClick = {
-                        viewModel.selectedPictureData = filterList[it]
+                        viewModel.selectedPictureData = viewModel.myList[it]
                         //Navigation vers detail
                         navController?.navigate(Routes.DetailScreen.addParam(it))
                     })
@@ -117,7 +139,7 @@ fun SearchScreen(navController : NavHostController? = null, viewModel: MainViewM
             Button(
                 onClick = {
                     viewModel.loadData(true)
-                          },
+                },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
                 Icon(
@@ -159,7 +181,7 @@ fun SearchBar(modifier: Modifier = Modifier, text: String, onValueChange: (Strin
 //Composable affichant 1 PictureData
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData, onPictureClick : ()->Unit = {}) {
+fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData, onPictureClick: () -> Unit = {}) {
 
     var expended by remember { mutableStateOf(false) }
 
