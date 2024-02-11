@@ -36,26 +36,26 @@ import com.amonteiro.a2023_11_sopra.ui.theme.A2023_11_sopraTheme
 @Preview(showBackground = true, showSystemUi = true)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun MexicanFoodScreenPreview() {
+fun PokemonScreenPreview() {
     A2023_11_sopraTheme {
         Surface(modifier = Modifier.fillMaxWidth(), color = Color.Gray) {
-            MexicanFoodScreen()
+            PokemonScreen()
         }
     }
 }
 
 //Composable représentant l'ensemble de l'écran
 @Composable
-fun MexicanFoodScreen(navController : NavHostController? = null, viewModel: MainViewModel = viewModel()) {
+fun PokemonScreen(navController : NavHostController? = null, viewModel: MainViewModel = viewModel()) {
 
     //Pour déclancher un élément uniquement en arrivant sur l'écran
     LaunchedEffect("") {
-        viewModel.loadMexicanFoodData()
+        viewModel.loadPokemonData()
     }
 
 
     //Quand c'était une liste de filtre
-    //val filterList = viewModel.myList.filter { it.text.contains(viewModel.searchText.value) }
+    viewModel.myList.filter { it.name.contains(viewModel.searchText.value) }
 
 
 
@@ -66,10 +66,6 @@ fun MexicanFoodScreen(navController : NavHostController? = null, viewModel: Main
         })
 
         Spacer(Modifier.size(8.dp))
-
-//        if(viewModel.runInProgress) {
-//            CircularProgressIndicator()
-//        }
 
         if(viewModel.errorMessage.value.isNotBlank()){
             Text(text = viewModel.errorMessage.value,
@@ -87,7 +83,7 @@ fun MexicanFoodScreen(navController : NavHostController? = null, viewModel: Main
                 PictureRowItem(Modifier.background(Color.White),
                     data = viewModel.myList[it],
                     onPictureClick = {
-                        viewModel.selectedPictureData = viewModel.myList[it]
+                        viewModel.selectedPokemonResultBean = viewModel.myList[it]
                         //Navigation vers detail
                         navController?.navigate(Routes.DetailScreen.addParam(it))
                     })
@@ -110,7 +106,7 @@ fun MexicanFoodScreen(navController : NavHostController? = null, viewModel: Main
 
             Button(
                 onClick = {
-                    viewModel.loadMexicanFoodData(true)
+                    viewModel.loadPokemonData(true)
                           },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {

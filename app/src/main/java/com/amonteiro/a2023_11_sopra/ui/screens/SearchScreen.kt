@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,8 +44,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.amonteiro.a2023_11_sopra.R
 import com.amonteiro.a2023_11_sopra.Routes
+import com.amonteiro.a2023_11_sopra.exo.PokemonResultBean
 import com.amonteiro.a2023_11_sopra.model.MainViewModel
-import com.amonteiro.a2023_11_sopra.model.PictureData
 import com.amonteiro.a2023_11_sopra.ui.theme.A2023_11_sopraTheme
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -66,34 +67,18 @@ fun SearchScreenPreview() {
 @Composable
 fun SearchScreen(navController: NavHostController? = null, viewModel: MainViewModel = viewModel()) {
 
-    //Pour déclancher un élément uniquement en arrivant sur l'écran
-//    LaunchedEffect("") {
-//        viewModel.loadData()
-//    }
-
-
-    //Quand c'était une liste de filtre
-    //val filterList = viewModel.myList.filter { it.text.contains(viewModel.searchText.value) }
-
-
     Column(modifier = Modifier.padding(8.dp)) {
 
         SearchBar(text = viewModel.searchText.value, onValueChange = {
             viewModel.uploadSearchText(it)
         })
 
-        Text("Go to MexicanFood",
+        Text("Go to Pokemon",
             modifier = Modifier.clickable {
                 navController?.navigate(Routes.MexicanFoodScreen.route)
             }
         )
-
         Spacer(Modifier.size(8.dp))
-
-//        if(viewModel.runInProgress) {
-//            CircularProgressIndicator()
-//        }
-
         if (viewModel.errorMessage.value.isNotBlank()) {
             Text(
                 text = viewModel.errorMessage.value,
@@ -115,7 +100,7 @@ fun SearchScreen(navController: NavHostController? = null, viewModel: MainViewMo
                 PictureRowItem(Modifier.background(Color.White),
                     data = viewModel.myList[it],
                     onPictureClick = {
-                        viewModel.selectedPictureData = viewModel.myList[it]
+                        viewModel.selectedPokemonResultBean = viewModel.myList[it]
                         //Navigation vers detail
                         navController?.navigate(Routes.DetailScreen.addParam(it))
                     })
@@ -138,7 +123,7 @@ fun SearchScreen(navController: NavHostController? = null, viewModel: MainViewMo
 
             Button(
                 onClick = {
-                    viewModel.loadData(true)
+                    viewModel.loadPokemonData(true)
                 },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
@@ -181,17 +166,15 @@ fun SearchBar(modifier: Modifier = Modifier, text: String, onValueChange: (Strin
 //Composable affichant 1 PictureData
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData, onPictureClick: () -> Unit = {}) {
+fun PictureRowItem(modifier: Modifier = Modifier, data: PokemonResultBean, onPictureClick: () -> Unit = {}) {
 
     var expended by remember { mutableStateOf(false) }
-
-    var texte = if (expended) data.longText else (data.longText.take(20) + "...")
 
     Row(modifier = modifier.fillMaxWidth()) {
 
 //Permission Internet nécessaire
         GlideImage(
-            model = data.url,
+            model = data.image,
             //Dans string.xml
             contentDescription = "Image",
             //En dur
@@ -215,13 +198,13 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: PictureData, onPictureCl
         }) {
 
             Text(
-                text = data.text,
+                text = data.name,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 color = Color.Black
             )
             Text(
-                text = texte,
+                text = data.pokedexId,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 color = Color.Blue,

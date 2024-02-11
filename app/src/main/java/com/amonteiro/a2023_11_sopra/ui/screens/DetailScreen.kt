@@ -1,7 +1,11 @@
 package com.amonteiro.a2023_11_sopra.ui.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,13 +22,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.amonteiro.a2023_11_sopra.R
 import com.amonteiro.a2023_11_sopra.model.MainViewModel
 import com.amonteiro.a2023_11_sopra.ui.theme.A2023_11_sopraTheme
@@ -39,7 +46,7 @@ fun DetailScreenPreview(){
     A2023_11_sopraTheme() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background) {
-            DetailScreen(0)
+            DetailScreen()
         }
 
     }
@@ -47,44 +54,80 @@ fun DetailScreenPreview(){
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun DetailScreen(position:Int, navController : NavHostController? = null, viewModel : MainViewModel = viewModel()){
+fun DetailScreen(navController: NavHostController? = null, viewModel: MainViewModel = viewModel()){
 
-    //V1 avec la position mais on n'est pas sur la bonne liste
-    //val pictureData = viewModel.myList[position]
-    //V2 on met dans le view model l'élément choisi
-    val pictureData = viewModel.selectedPictureData ?: viewModel.myList.first()
+    val pokemonData = viewModel.selectedPokemonResultBean ?: viewModel.myList.first()
+    val attackIcon = painterResource(R.drawable.attack)
+    val lifeIcon = painterResource(R.drawable.lifebar)
+    val speedIcon = painterResource(R.drawable.speed)
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
+// Extract type names from the apiTypes list
+    val typeNames = pokemonData.apiTypes.map { it.name }
+    val typeImage = pokemonData.apiTypes.map { it.image }
 
-        modifier = Modifier.padding(8.dp)) {
-
-        Text(text = pictureData.text,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        Text(
+            text = pokemonData.name,
             color = MaterialTheme.colorScheme.primary,
-            fontSize = 36.sp
-            )
+            fontSize = 36.sp,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
 
         GlideImage(
-            model = pictureData.url ,
-            //Dans string.xml
+            model = pokemonData.image,
             contentDescription = "Image",
-            //En dur
-            //contentDescription = "une photo de chat",
-            loading = placeholder(R.mipmap.ic_launcher_round), // Image de chargement
-            // Image d'échec. Permet également de voir l'emplacement de l'image dans la Preview
+            loading = placeholder(R.mipmap.ic_launcher_round),
             failure = placeholder(R.mipmap.ic_launcher),
             contentScale = ContentScale.Fit,
-            //même autres champs qu'une Image classique
-            modifier = Modifier.fillMaxWidth().weight(2f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
         )
 
-        Text(pictureData.longText,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().weight(1f)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            // Texte avec image pour chaque type
+            pokemonData.apiTypes.forEach { type ->
+                TextWithImage(
+                    text = type.name,
+                    imageUrl = type.image
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            // Premier texte avec icône
+            TextWithIcon(
+                text = "Attack:${pokemonData.stats.attack}",
+                icon = attackIcon
+            )
+
+            // Deuxième texte avec icône
+            TextWithIcon(
+                text = "Defense:${pokemonData.stats.defense}",
+                icon = lifeIcon
+            )
+
+            // Troisième texte avec icône
+            TextWithIcon(
+                text = "Speed:${pokemonData.stats.speed}",
+                icon = speedIcon
+            )
+        }
+
 
         Button(
             onClick = { navController?.popBackStack() },
-            contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+            contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+            modifier = Modifier.padding(top = 8.dp)
         ) {
             Icon(
                 Icons.Filled.ArrowBack,
@@ -95,6 +138,42 @@ fun DetailScreen(position:Int, navController : NavHostController? = null, viewMo
             Text("Retour")
         }
     }
-
-
 }
+
+@Composable
+fun TextWithIcon(text: String, icon: Painter) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = "" + text,
+            textAlign = TextAlign.Center,
+        )
+        Image(
+            painter = icon,
+            contentDescription = null,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
+@Composable
+private fun TextWithImage(text: String, imageUrl: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Image(
+            painter = rememberImagePainter(imageUrl),
+            contentDescription = null,
+            modifier = Modifier.size(24.dp)
+        )
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+

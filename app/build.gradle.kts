@@ -82,4 +82,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.+")
 //ViewModelScope
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.+")
+
+    implementation ("io.coil-kt:coil-compose:1.4.0")
+
 }

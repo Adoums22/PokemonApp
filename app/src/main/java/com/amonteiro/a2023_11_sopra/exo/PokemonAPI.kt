@@ -5,40 +5,20 @@ import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-fun main() {
-
-    val foodList = MexicanFoodAPI.loadFoodList()
-    println(foodList)
-
-
-//    val food = MexicanFoodAPI.loadFood("6")
-//
-//    println("Recette : ${food.title}\nDifficulté : ${food.difficulty}")
-//
-}
-
-object MexicanFoodAPI {
+object PokemonAPI {
 
     val client = OkHttpClient()
     val gson = Gson()
 
-    private const val URL_API = "https://the-mexican-food-db.p.rapidapi.com"
+    private const val URL_API = "https://pokebuildapi.fr/api/v1/pokemon"
 
 
-    fun loadFood(id: String): MexicanFoodDetailBean {
+    fun loadPokemonList(queryParam: String): List<PokemonResultBean> {
         //récupération des données
-        val json = sendGet("/$id")
+        val json = sendGet(queryParam)
 
         //Parsing
-        return  gson.fromJson(json, MexicanFoodDetailBean::class.java)
-    }
-
-    fun loadFoodList(): List<MexicanFoodResultBean> {
-        //récupération des données
-        val json = sendGet("")
-
-        //Parsing
-        return  gson.fromJson(json, Array<MexicanFoodResultBean>::class.java).toList()
+        return  gson.fromJson(json, Array<PokemonResultBean>::class.java).toList()
     }
 
 
@@ -70,35 +50,25 @@ object MexicanFoodAPI {
     }
 }
 
-data class MexicanFoodDetailBean(
-    var description: String,
-    var difficulty: String,
-    var id: String,
+
+data class PokemonResultBean(
     var image: String,
-    var ingredients: List<String>,
-    var method: List<StepsBean>,
-    var portion: String,
-    var time: String,
-    var title: String
+    var name: String,
+    var pokedexId: String,
+    var stats: Stats,
+    var apiTypes: List<TypesPokemon>
 )
 
-data class StepsBean(
-    @SerializedName("Step 1")
-    var step1: String?,
-    @SerializedName("Step 2")
-    var step2: String?,
-    @SerializedName("Step 3")
-    var step3: String?,
-    @SerializedName("Step 4")
-    var step4: String?,
-    @SerializedName("Step 5")
-    var step5: String?,
+data class Stats (
+    var hp: String,
+    var attack: String,
+    var defense: String,
+    var special_attack: String,
+    var special_defense: String,
+    var speed: String
 )
 
-
-data class MexicanFoodResultBean(
-    var difficulty: String,
-    var id: String,
-    var image: String,
-    var title: String
+data class TypesPokemon(
+    var name: String,
+    var image: String
 )

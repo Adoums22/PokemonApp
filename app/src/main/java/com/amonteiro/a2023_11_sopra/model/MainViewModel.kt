@@ -1,13 +1,14 @@
 package com.amonteiro.a2023_11_sopra.model
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amonteiro.a2023_11_sopra.exo.MexicanFoodAPI
-import com.amonteiro.a2023_11_sopra.exo.WeatherAPI
+import com.amonteiro.a2023_11_sopra.exo.PokemonAPI
+import com.amonteiro.a2023_11_sopra.exo.PokemonResultBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -19,17 +20,19 @@ class MainViewModel : ViewModel() {
 
     //by permet d'eviter d'écrire les .value
     var runInProgress by mutableStateOf(false)
-    val myList = mutableStateListOf<PictureData>()
+    val myList = mutableStateListOf<PokemonResultBean>()
 
-    var selectedPictureData: PictureData? = null
+    var selectedPokemonResultBean: PokemonResultBean? = null
 
 
     fun uploadSearchText(newText: String) {
+        Log.d("MainViewModel", "Nouveau texte de recherche: $newText")
         searchText.value = newText
+        Log.d("MainViewModel", "Texte de recherche mis à jour: ${searchText.value}")
     }
 
-    //force : Permet de forcer le rechargement des données
-    fun loadData(force: Boolean = false) {//Simulation de chargement de donnée
+
+    fun loadPokemonData(force: Boolean = false) {//Simulation de chargement de donnée
 
         errorMessage.value = ""
 
@@ -42,63 +45,22 @@ class MainViewModel : ViewModel() {
             viewModelScope.launch(Dispatchers.Default) {
                 try {
                     //Ma requête ici
-                    val weatherList = WeatherAPI.loadWeatherAround(searchText.value)
-
-                    //Version oldschool
-//                for (weatherBean in weatherList) {
-//                    val pictureData =
-//                    myList.add(pictureData)
-//                }
-
-                    myList.addAll(weatherList.map {
-                        PictureData(
-                            it.weather.getOrNull(0)?.icon ?: "",
-                            it.name,
-                            "Il fait ${it.main.temp}° à ${it.name} avec un vent de ${it.wind.speed} m/s"
-                        )
-                    })
-                }
-                catch (e: Exception) {
-                    e.printStackTrace()//affiche la stacktrace de l'erreur dans la console
-                    errorMessage.value = "Une erreur est survenue : ${e.message}"
-                }
-
-                //Version donnée en dur
-                //myList.addAll(pictureList.shuffled()) //Charge la liste en mode mélangé
-                runInProgress = false
-            }
-        }
-    }
-
-    fun loadMexicanFoodData(force: Boolean = false) {//Simulation de chargement de donnée
-
-        errorMessage.value = ""
-
-        if (myList.isEmpty() || force) {
-
-            runInProgress = true
-            myList.clear()
-
-            //Tache asynchrone
-            viewModelScope.launch(Dispatchers.Default) {
-                try {
-                    //Ma requête ici
-                    val list = MexicanFoodAPI.loadFoodList()
+                    val list = PokemonAPI.loadPokemonList(searchText.value)
                     myList.addAll(list.map {
-                        PictureData(
+                        PokemonResultBean(
                             it.image,
-                            it.title,
-                            "Difficulty : ${it.difficulty}"
+                            it.name,
+                            "Pokedex : ${it.pokedexId}",
+                            it.stats,
+                            it.apiTypes
                         )
                     })
+
                 }
                 catch (e: Exception) {
                     e.printStackTrace()//affiche la stacktrace de l'erreur dans la console
                     errorMessage.value = "Une erreur est survenue : ${e.message}"
                 }
-
-                //Version donnée en dur
-                //myList.addAll(pictureList.shuffled()) //Charge la liste en mode mélangé
                 runInProgress = false
             }
         }
